@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AirService;
 use App\Services\WaterLevelService;
 
-class WaterController extends Controller
+class DashBoardController extends Controller
 {
 
 
@@ -12,15 +13,18 @@ class WaterController extends Controller
     public function dashboard()
     {
 
-        $service = app(WaterLevelService::class);
-        $data = $service->getCurrentLevel();
+        $water = app(WaterLevelService::class);
+        $air = app(AirService::class);
+
+        $dataWater = $water->getCurrentLevel();
+        $dataAir = $air->getCurrentLevel();
 
         return response()->json([
             'success' => true,
             'timestamps' => now()->format('Y-m-d H:i:s'),
             'data' => [
-                'water' => $data,
-                'air' => 101,
+                'water' => $dataWater,
+                'air' => $dataAir,
                 'tourism' => 10,
                 'actions' => 'Почистить байкал'
             ]

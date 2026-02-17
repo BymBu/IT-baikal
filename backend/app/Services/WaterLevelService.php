@@ -21,4 +21,5 @@ class WaterLevelService
         if ($level < 457.0) return 'normal';
         return 'high';
     }
+
 }

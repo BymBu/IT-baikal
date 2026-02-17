@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\WaterController;
+use App\Http\Controllers\DashBoardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,4 +8,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('/api/dashboard', [WaterController::class, 'dashboard']);
+Route::get('/api/dashboard', [DashBoardController::class, 'dashboard']);
