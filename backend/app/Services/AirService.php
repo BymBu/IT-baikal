@@ -6,14 +6,14 @@ class AirService
 {
     public function getCurrentLevel()
     {
-        $pm25 = rand(35, 140); 
-        $pm10 = $pm25 + rand(20, 60);
-        $aqi = max($pm25, $pm10);
+        $pm25 = rand(35, 90);
+        $pm10 = $pm25 + rand(20, 40);
+        $aqi = rand(40, 90);
 
         // Определяем статус и сообщение динамически
         $status = 'good';
         $message = 'Воздух относительно чистый.';
-        
+
         if ($aqi > 100) {
             $status = 'unhealthy';
             $message = 'Высокое загрязнение! Основная причина — частный сектор. Рекомендуется носить маску.';

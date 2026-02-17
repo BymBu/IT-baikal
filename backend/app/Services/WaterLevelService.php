@@ -7,10 +7,13 @@ class WaterLevelService
 
     public function getCurrentLevel()
     {
+        $levelRaw = rand(45554, 45785) / 100;
+        $level = round($levelRaw, 2);
+
         return [
-            'level' => round(rand(45554, 45785) / 100, 2),
+            'level' => $level,
             'unit' => 'm',
-            'status' => $this->getStatus(rand(45554, 45785) / 100),
+            'status' => $this->getStatus($levelRaw),
             'updated_at' => now()->format('Y-m-d H:i:s')
         ];
     }
@@ -21,5 +24,4 @@ class WaterLevelService
         if ($level < 457.0) return 'normal';
         return 'high';
     }
-
 }
