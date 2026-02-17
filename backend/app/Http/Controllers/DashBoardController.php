@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AirService;
+use App\Services\TourismService;
 use App\Services\WaterLevelService;
 
 class DashBoardController extends Controller
@@ -15,9 +16,11 @@ class DashBoardController extends Controller
 
         $water = app(WaterLevelService::class);
         $air = app(AirService::class);
+        $tourism = app(TourismService::class);
 
         $dataWater = $water->getCurrentLevel();
         $dataAir = $air->getCurrentLevel();
+        $dataTourism = $tourism->getCurrentLevel();
 
         return response()->json([
             'success' => true,
@@ -25,7 +28,7 @@ class DashBoardController extends Controller
             'data' => [
                 'water' => $dataWater,
                 'air' => $dataAir,
-                'tourism' => 10,
+                'tourism' => $dataTourism,
                 'actions' => 'Почистить байкал'
             ]
         ], 200);
