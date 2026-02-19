@@ -95,10 +95,12 @@ function handleWheel(e) {
 }
 
 onMounted(() => {
+  // сцена
   scene = new THREE.Scene()
 
+  // камера, рендер
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
-  camera.position.set(60, 30, 60)
+  camera.position.set(60, 50, 60)
   camera.lookAt(0, 0, 0)
 
   renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -110,26 +112,46 @@ onMounted(() => {
   const canvas = Object.assign(document.createElement('canvas'), { width: 2, height: 512 })
   const ctx = canvas.getContext('2d')
   const grad = ctx.createLinearGradient(0, 0, 0, 512)
+
   grad.addColorStop(0, '#9BC5E4')
   grad.addColorStop(0.4, '#F6E5C3')
   grad.addColorStop(0.7, '#FFDAB9')
   grad.addColorStop(1, '#FFE4E1')
+
   ctx.fillStyle = grad
   ctx.fillRect(0, 0, 2, 512)
+
   scene.background = new THREE.CanvasTexture(canvas)
-
-
   container.value.appendChild(renderer.domElement)
 
-  scene.add(new THREE.DirectionalLight(0xffffff, 1))
-  scene.add(new THREE.AmbientLight(0x404040))
+  // Свет
+  const ambientLight = new THREE.AmbientLight(0x404060)
+  scene.add(ambientLight)
 
+  // Основной солнечный свет
+  const sunLight = new THREE.DirectionalLight(0xfff5e6, 1.2)
+  sunLight.position.set(10, 30, 20)
+  sunLight.castShadow = true
+  sunLight.shadow.mapSize.width = 1024
+  sunLight.shadow.mapSize.height = 1024
+  scene.add(sunLight)
+
+  // Заполняющий свет сзади
+  const backLight = new THREE.DirectionalLight(0x6688aa, 0.5)
+  backLight.position.set(-10, 10, -20)
+  scene.add(backLight)
+
+  // Туман
+  scene.fog = new THREE.Fog(0xdde39f, 50, 200)
+
+  // Модель Байкала
   new GLTFLoader().load('/models/baikal.glb', (gltf) => {
     gltf.scene.traverse((node) => {
 
     })
     scene.add(gltf.scene)
   })
+
 
   function animate() {
     requestAnimationFrame(animate)
