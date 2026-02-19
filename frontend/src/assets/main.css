@@ -3,3 +3,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+:root {
+  --bg: #F8FAFC;
+  --bgSoft: #F1F5F9;
+  --bgHard: #E2E8F0;
+  --accent: #3B82F6;
+  --text: #0F172A;
+  --border: #CBD5E1;
+}

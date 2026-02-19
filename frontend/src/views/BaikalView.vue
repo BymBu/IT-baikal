@@ -10,7 +10,7 @@
     </header>
 
     <div class="bottom-section">
-      
+
       <aside class="sidebar">
         <nav>
           <button>Воздух</button>
@@ -19,7 +19,8 @@
         </nav>
       </aside>
 
-      <main class="content" ref="container"></main> <!-- Убрал placeholder -->
+      <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
+        @mousedown="handleMouseDown" @mousemove="handleMouseMove"></main>
 
     </div>
   </div>
@@ -31,23 +32,102 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 const container = ref(null)
+let camera, scene, renderer
+let isDragging = false
+let lastX = 0
+let lastY = 0
+let moveSpeed = 0.5
+let zoomSpeed = 0.2
+
+// Векторы направления камеры
+let forward = new THREE.Vector3()
+let right = new THREE.Vector3()
+let up = new THREE.Vector3(0, 1, 0)
+
+function handleMouseDown(e) {
+  isDragging = true
+  lastX = e.clientX
+  lastY = e.clientY
+}
+
+function handleMouseMove(e) {
+  if (!isDragging || !camera) return
+
+  const deltaX = e.clientX - lastX
+  const deltaY = e.clientY - lastY
+
+  // Получаем направления камеры
+  camera.getWorldDirection(forward)
+  right.crossVectors(forward, up).normalize()
+
+  // Движение в стороны и вперед/назад
+  if (e.shiftKey) {
+    // Shift + движение = движение вверх/вниз
+    camera.position.y -= deltaY * moveSpeed * 0.1
+
+  } else if (e.ctrlKey) {
+    // Ctrl + движение = приближение/отдаление
+    camera.position.addScaledVector(forward, -deltaY * moveSpeed * 0.1)
+
+  } else {
+    // Обычное движение = панорамирование
+    camera.position.addScaledVector(right, -deltaX * moveSpeed * 0.1)
+    camera.position.addScaledVector(up, deltaY * moveSpeed * 0.1)
+  }
+
+  // Камера всегда смотрит вперед
+  camera.lookAt(camera.position.clone().add(forward))
+
+  lastX = e.clientX
+  lastY = e.clientY
+}
+
+function handleMouseUp() {
+  isDragging = false
+}
+
+function handleWheel(e) {
+  if (!camera) return
+
+  // Приближение к курсору мыши
+  camera.getWorldDirection(forward)
+  camera.position.addScaledVector(forward, e.deltaY * zoomSpeed * -0.1)
+}
 
 onMounted(() => {
-  const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
-  camera.position.set(50, 50, 50)
-  camera.lookAt(0, -5, 0)
-  
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  scene = new THREE.Scene()
+
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(60, 30, 60)
+  camera.lookAt(0, 0, 0)
+
+  renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
+
+
+  // фон, градиент через canvas
+  // renderer.setClearColor('#F1F5F9')
+  const canvas = Object.assign(document.createElement('canvas'), { width: 2, height: 512 })
+  const ctx = canvas.getContext('2d')
+  const grad = ctx.createLinearGradient(0, 0, 0, 512)
+  grad.addColorStop(0, '#9BC5E4')
+  grad.addColorStop(0.4, '#F6E5C3')
+  grad.addColorStop(0.7, '#FFDAB9')
+  grad.addColorStop(1, '#FFE4E1')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, 2, 512)
+  scene.background = new THREE.CanvasTexture(canvas)
+
+
   container.value.appendChild(renderer.domElement)
 
-  // Свет
   scene.add(new THREE.DirectionalLight(0xffffff, 1))
   scene.add(new THREE.AmbientLight(0x404040))
 
-  // Модель
   new GLTFLoader().load('/models/baikal.glb', (gltf) => {
+    gltf.scene.traverse((node) => {
+
+    })
     scene.add(gltf.scene)
   })
 
@@ -67,18 +147,23 @@ onMounted(() => {
   overflow: hidden;
   margin: 0;
   padding: 0;
+  background-color: var(--bg);
+  user-select: none;
 }
 
 .header {
   height: 60px;
-  background-color: rgb(242, 244, 245);
+  background-color: var(--bgSoft);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--bgHard);
   flex-shrink: 0;
   z-index: 10;
+  border-radius: 15px;
+  margin: 10px 10px 0px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .bottom-section {
@@ -89,24 +174,29 @@ onMounted(() => {
 
 .sidebar {
   width: 250px;
-  background-color: #fff;
-  border-right: 1px solid #ddd;
+  background-color: var(--bgSoft);
+  border-right: 1px solid var(--bgHard);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex-shrink: 0;
   z-index: 5;
+  border-radius: 15px;
+  margin: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .content {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background-color: #87CEEB; /* Временный фон пока не загрузится three */
+  background-color: var(--bg);
+  border-radius: 15px;
+  margin: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Стили для canvas чтоб занимал всю область */
 .content :deep(canvas) {
   display: block;
   width: 100%;
@@ -119,19 +209,25 @@ onMounted(() => {
   gap: 10px;
   font-size: 18px;
   font-weight: bold;
+  color: var(--text);
+}
+
+.header__controls {
+  color: var(--text);
 }
 
 button {
   padding: 10px;
   cursor: pointer;
-  background: #eee;
+  background: var(--bg);
   border: none;
   border-radius: 5px;
   width: 100%;
   transition: background 0.3s;
+  color: var(--text);
 }
 
 button:hover {
-  background: #ddd;
+  background: var(--bgHard);
 }
 </style>
