@@ -5,7 +5,7 @@
 /backend/storage/*.key
 /backend/database/database.sqlite
 
-# Vue/Frontend (когда создашь)
+# Vue/Frontend 
 /frontend/node_modules
 /frontend/dist
 /frontend/.env
