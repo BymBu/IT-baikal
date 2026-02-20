@@ -1,14 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
 }
 
 :root {
-  --bg: #F8FAFC;
-  --bgSoft: #F1F5F9;
-  --bgHard: #E2E8F0;
-  --accent: #3B82F6;
-  --text: #0F172A;
-  --border: #CBD5E1;
+  --bg: #f8fafc;
+  --bgSoft: #f1f5f9;
+  --bgHard: #e2e8f0;
+  --accent: #3b82f6;
+  --text: #0f172a;
+  --border: #cbd5e1;
 }

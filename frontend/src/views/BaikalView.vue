@@ -19,6 +19,8 @@
         </nav>
       </aside>
 
+      
+
       <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
         @mousedown="handleMouseDown" @mousemove="handleMouseMove"></main>
 
@@ -195,7 +197,7 @@ onMounted(() => {
 }
 
 .sidebar {
-  width: 250px;
+  width: 550px;
   background-color: var(--bgSoft);
   border-right: 1px solid var(--bgHard);
   padding: 20px;
@@ -207,6 +209,16 @@ onMounted(() => {
   border-radius: 15px;
   margin: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 80px;
+  width: 550px;
+}
+
+.sidebar nav {
+  display: flex;
+  justify-content: space-between;
 }
 
 .content {
