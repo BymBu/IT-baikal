@@ -18,9 +18,6 @@
           <button>Туристы</button>
         </nav>
       </aside>
-
-      
-
       <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
         @mousedown="handleMouseDown" @mousemove="handleMouseMove"></main>
 
@@ -40,6 +37,17 @@ let lastX = 0
 let lastY = 0
 let moveSpeed = 0.5
 let zoomSpeed = 0.2
+
+// ивенты спрайтов
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+const sprites = ref([]) // массив для спрайтов
+
+const points = ref([
+  { id: 1, name: 'Центр', position: [0, 0, 0], airQuality: 1020, waterQuality: 100 },
+  { id: 2, name: 'Угол 1', position: [5, 0, 40], airQuality: 98, waterQuality: 95 },  // поменяй цифры
+  { id: 3, name: 'Угол 2', position: [-5, 0, -40], airQuality: 100, waterQuality: 97 }, // после лога
+])
 
 // Векторы направления камеры
 let forward = new THREE.Vector3()
@@ -127,11 +135,16 @@ onMounted(() => {
   container.value.appendChild(renderer.domElement)
 
   // Свет
-  const ambientLight = new THREE.AmbientLight(0x404060)
+  const ambientLight = new THREE.AmbientLight(0x404080, 1.5)
   scene.add(ambientLight)
 
+  const frontLight = new THREE.DirectionalLight(0xffeedd, 1.0)
+  frontLight.position.set(0, 20, 30)
+  scene.add(frontLight)
+
+
   // Основной солнечный свет
-  const sunLight = new THREE.DirectionalLight(0xfff5e6, 1.2)
+  const sunLight = new THREE.DirectionalLight(0xfff5e6, 1.8) // было 1.2
   sunLight.position.set(10, 30, 20)
   sunLight.castShadow = true
   sunLight.shadow.mapSize.width = 1024
@@ -154,7 +167,58 @@ onMounted(() => {
     scene.add(gltf.scene)
   })
 
+  // Маркеры
 
+  // текстура для маркеров (Аннотации)
+  function createMarkerTexture(name, quality) {
+    const canvas = document.createElement('canvas')
+    canvas.width = 128
+    canvas.height = 128
+    const ctx = canvas.getContext('2d')
+
+    // Рисуем кружок
+    ctx.beginPath()
+    ctx.arc(64, 64, 50, 0, Math.PI * 2)
+    ctx.fillStyle = '#3B82F6'
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'
+    ctx.shadowBlur = 10
+    ctx.fill()
+
+    // Белая обводка
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 4
+    ctx.stroke()
+
+    // Текст
+    ctx.font = 'bold 20px Arial'
+    ctx.fillStyle = 'white'
+    ctx.shadowBlur = 0
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(name, 64, 64)
+
+    return new THREE.CanvasTexture(canvas)
+  }
+
+  // Создание спрайтов (маркеров, аннотаций)
+  points.value.forEach(point => {
+    const texture = createMarkerTexture(point.name, point.airQuality)
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      depthTest: false,
+      depthWrite: false,
+      transparent: true
+    })
+
+    const sprite = new THREE.Sprite(material)
+    sprite.position.set(point.position[0], point.position[1], point.position[2])
+    sprite.scale.set(5, 5, 1)
+
+    scene.add(sprite)
+  })
+
+
+  // animate
   function animate() {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
@@ -218,7 +282,7 @@ onMounted(() => {
 
 .sidebar nav {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
 }
 
 .content {
