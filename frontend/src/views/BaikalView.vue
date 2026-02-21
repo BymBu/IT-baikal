@@ -41,13 +41,45 @@ let zoomSpeed = 0.2
 // ивенты спрайтов
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
-const sprites = ref([]) // массив для спрайтов
+const sprites = [] // массив для спрайтов
+
+const onMouseMove = (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+
+  // Проверяем пересечения сразу при движении мыши
+  if (scene && camera) {
+    raycaster.setFromCamera(mouse, camera)
+    const intersects = raycaster.intersectObjects(sprites)
+
+    if (intersects.length > 0) {
+      console.log('Наведение на спрайт:', intersects[0].object.userData)
+      const sprite = intersects[0].object
+      sprite.scale.set(6, 6, 1)
+
+      sprites.forEach(s => {
+        if (s !== sprite) {
+          s.scale.set(5, 5, 1)
+        }
+      })
+    }
+    else {
+      sprites.forEach(s => {
+        s.scale.set(5, 5, 1)
+      })
+    }
+
+  }
+}
+
+window.addEventListener('mousemove', onMouseMove)
 
 const points = ref([
   { id: 1, name: 'Центр', position: [0, 0, 0], airQuality: 1020, waterQuality: 100 },
-  { id: 2, name: 'Угол 1', position: [5, 0, 40], airQuality: 98, waterQuality: 95 },  // поменяй цифры
-  { id: 3, name: 'Угол 2', position: [-5, 0, -40], airQuality: 100, waterQuality: 97 }, // после лога
+  { id: 2, name: 'Угол 1', position: [5, 0, 40], airQuality: 98, waterQuality: 95 },
+  { id: 3, name: 'Угол 2', position: [-5, 0, -40], airQuality: 100, waterQuality: 97 },
 ])
+
 
 // Векторы направления камеры
 let forward = new THREE.Vector3()
@@ -135,7 +167,7 @@ onMounted(() => {
   container.value.appendChild(renderer.domElement)
 
   // Свет
-  const ambientLight = new THREE.AmbientLight(0x404080, 1.5)
+  const ambientLight = new THREE.AmbientLight(0xffe4e1, 1.2)
   scene.add(ambientLight)
 
   const frontLight = new THREE.DirectionalLight(0xffeedd, 1.0)
@@ -144,7 +176,7 @@ onMounted(() => {
 
 
   // Основной солнечный свет
-  const sunLight = new THREE.DirectionalLight(0xfff5e6, 1.8) // было 1.2
+  const sunLight = new THREE.DirectionalLight(0xffdab9, 1.8)
   sunLight.position.set(10, 30, 20)
   sunLight.castShadow = true
   sunLight.shadow.mapSize.width = 1024
@@ -207,14 +239,22 @@ onMounted(() => {
       map: texture,
       depthTest: false,
       depthWrite: false,
-      transparent: true
+      transparent: true,
+
     })
 
     const sprite = new THREE.Sprite(material)
     sprite.position.set(point.position[0], point.position[1], point.position[2])
     sprite.scale.set(5, 5, 1)
 
+    sprite.userData = {
+      id: point.id,
+      name: point.name
+    }
+
     scene.add(sprite)
+
+    sprites.push(sprite)
   })
 
 
