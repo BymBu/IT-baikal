@@ -18,9 +18,9 @@ export function useMarkers(threeState) {
   const tooltipPosition = ref({ x: 0, y: 0 });
   const showTooltipFlag = ref(false);
 
-  const createMarkerTexture = (name, quality) => {
+  const createMarkerTexture = (point) => {
     let color = "#3B82F6";
-    if (quality > 1000) color = "#EF4444";
+
     const canvas = document.createElement("canvas");
     canvas.width = 256;
     canvas.height = 256;
@@ -35,7 +35,7 @@ export function useMarkers(threeState) {
     // кружок
     ctx.beginPath();
     ctx.arc(128, 128, 45, 0, Math.PI * 2);
-    ctx.fillStyle = color;
+    ctx.fillStyle = point.color;
     ctx.shadowColor = "rgba(0,0,0,0.5)";
     ctx.shadowBlur = 15;
     ctx.fill();
@@ -49,7 +49,7 @@ export function useMarkers(threeState) {
     ctx.shadowBlur = 0;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(name, 128, 128);
+    ctx.fillText(point.name, 128, 128);
 
     return new THREE.CanvasTexture(canvas);
   };
@@ -104,7 +104,7 @@ export function useMarkers(threeState) {
     sprites = [];
 
     points.forEach((point) => {
-      const texture = createMarkerTexture(point.name, point.airQuality);
+      const texture = createMarkerTexture(point);
 
       const material = new THREE.SpriteMaterial({
         map: texture,
