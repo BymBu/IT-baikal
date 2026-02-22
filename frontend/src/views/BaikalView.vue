@@ -3,16 +3,20 @@
     <HeaderComponent />
     <div class="bottom-section">
       <SidebarComponent @select-point="handlePointSelect" />
-      <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
-        @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave"></main>
+
+      <div class="content-wrapper">
+        <div class="night-overlay" :style="{ opacity: isNight ? 0.8 : 0 }"></div>
+        <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
+          @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave"></main>
+
+      </div>
     </div>
 
+
+
     <Transition name="fade">
-      <div 
-        v-if="showTooltipFlag && currentMarker"
-        class="marker-tooltip"
-        :style="{ left: tooltipPosition.x + 'px', top: tooltipPosition.y + 'px' }"
-      >
+      <div v-if="showTooltipFlag && currentMarker" class="marker-tooltip"
+        :style="{ left: tooltipPosition.x + 'px', top: tooltipPosition.y + 'px' }">
         <h3>{{ currentMarker.name }}</h3>
         <p>💨 Воздух: {{ currentMarker.airQuality }}</p>
         <p>💧 Вода: {{ currentMarker.waterQuality }}</p>
@@ -22,21 +26,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import HeaderComponent from '../components/Header.vue'
 import SidebarComponent from '../components/Sidebar.vue'
 import { useThreeScene } from '../composables/useThreeScene'
 import { useCameraControls } from '../composables/useCameraControls'
 import { useMarkers } from '../composables/useMarkers'
 
+// контейнер с 3д моделью
 const container = ref(null)
 
+// обьекты three.js
 const threeState = ref({
   scene: null,
   camera: null,
   renderer: null
 })
 
+// маркеры
 const points = [
   { id: 1, name: 'Центр', position: [23, 3, 0], airQuality: 1020, waterQuality: 100 },
   { id: 2, name: 'Угол 1', position: [-30, 3, 40], airQuality: 98, waterQuality: 95 },
@@ -44,7 +51,11 @@ const points = [
   { id: 3, name: 'Угол 222', position: [10, 23, -40], airQuality: 100, waterQuality: 97 },
 ]
 
-const { initScene } = useThreeScene(container, threeState)
+const { initScene, day } = useThreeScene(container, threeState)
+
+// Свойство для проверки дня и ночи
+const isNight = computed(() => !day.value)
+
 const {
   handleMouseDown,
   handleMouseMove,
@@ -55,17 +66,19 @@ const {
 
 const { currentMarker, tooltipPosition, showTooltipFlag, createMarkers, highlightMarker, checkIntersections, dispose: disposeMarkers } = useMarkers(threeState)
 
-
+// Проверка наведения на маркер
 const onMouseMoveForRaycaster = (event) => {
   if (threeState.value.camera && threeState.value.scene) {
     checkIntersections(event)
   }
 }
 
+// Спрятать наведение на маркер
 const handleMouseLeave = () => {
   checkIntersections({ clientX: 0, clientY: 0 })
 }
 
+// При монтировании компонента инициализируем сцену
 onMounted(() => {
   console.log('🔧 Инициализация...')
   initScene()
@@ -84,6 +97,7 @@ onMounted(() => {
   }
 })
 
+// При размонтировании убрать за собой, оптимизация
 onUnmounted(() => {
   if (container.value) {
     container.value.removeEventListener('mousemove', onMouseMoveForRaycaster)
@@ -101,8 +115,6 @@ const handlePointSelect = (id) => {
 </script>
 
 <style scoped>
-
-
 .app-container {
   display: flex;
   flex-direction: column;
@@ -135,14 +147,21 @@ const handlePointSelect = (id) => {
   overflow: hidden;
 }
 
-.content {
+.content-wrapper {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background-color: var(--bg);
   border-radius: 15px;
   margin: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg);
 }
 
 .content :deep(canvas) {
@@ -160,8 +179,8 @@ const handlePointSelect = (id) => {
   color: white;
   padding: 16px 24px;
   border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 20px 35px -8px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.4);
   pointer-events: none;
   z-index: 1000;
   transform: translate(15px, -50%);
@@ -185,11 +204,29 @@ const handlePointSelect = (id) => {
   gap: 6px;
 }
 
-.fade-enter-active, .fade-leave-active {
+/* анимация маркеров */
+
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.2s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
+}
+
+/* смена дня ночи */
+.night-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  pointer-events: none;
+  transition: opacity 3s ease;
+  z-index: 2;
+  border-radius: 15px;
 }
 </style>
