@@ -19,7 +19,6 @@ export function useMarkers(threeState) {
   const showTooltipFlag = ref(false);
 
   const createMarkerTexture = (point) => {
-    let color = "#3B82F6";
 
     const canvas = document.createElement("canvas");
     canvas.width = 256;
@@ -87,7 +86,7 @@ export function useMarkers(threeState) {
         name: "События",
         type: "event",
         position: [23, 3, 0],
-        data: apiStore.nextAction,
+        data: apiStore.actionsData,
         color: "#EF4444",
       },
     ];

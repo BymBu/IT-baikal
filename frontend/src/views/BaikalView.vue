@@ -3,7 +3,6 @@
     <HeaderComponent />
     <div class="bottom-section">
       <SidebarComponent @select-point="handlePointSelect" />
-
       <div class="content-wrapper">
         <div class="night-overlay" :style="{ opacity: isNight ? 0.6 : 0 }"></div>
         <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
@@ -28,9 +27,9 @@
 
         <!-- ВОДА -->
         <template v-if="currentMarker.type === 'water'">
-          <p>Уровень: {{ currentMarker.data.level }}{{ currentMarker.data.unit }} </p>
-          <p>Статус: {{ currentMarker.data.status }}</p>
-          <p>Обновлено: {{ currentMarker.data.updated_at }}</p>
+          <p>📶 Уровень: {{ currentMarker.data.level }}{{ currentMarker.data.unit }} </p>
+          <p>📋 Статус: {{ currentMarker.data.status }}</p>
+          <p>🔄️ Обновлено: {{ currentMarker.data.updated_at }}</p>
         </template>
 
         <!-- ВОЗДУХ -->
@@ -45,18 +44,24 @@
 
         <!-- ТУРИЗМ -->
         <template v-else-if="currentMarker.type === 'tourism'">
-          <p>Загруженность: {{ currentMarker.data.load_percent }}%</p>
-          <p>Температура: {{ currentMarker.data.avg_temp_c }}°C</p>
-          <p>Топ место: {{ currentMarker.data.top_location }}</p>
+          <p>👨 Загруженность: {{ currentMarker.data.load_percent }}%</p>
+          <p>🌡️ Температура: {{ currentMarker.data.avg_temp_c }}°C</p>
+          <p>🔝 Топ место: {{ currentMarker.data.top_location }}</p>
           <p class="tip">💡 {{ currentMarker.data.visitor_tip }}</p>
         </template>
 
         <!-- СОБЫТИЯ -->
         <template v-else-if="currentMarker.type === 'event'">
-          <p>{{ currentMarker.data.icon }} {{ currentMarker.data.title }}</p>
-          <p>📍 {{ currentMarker.data.location }}</p>
-          <p>📆 {{ currentMarker.data.date }}</p>
-          <p class="description">{{ currentMarker.data.description }}</p>
+          <div class="event">
+            <div v-for="action in currentMarker.data" class="event--wrapper">
+              <p>{{ action.icon }} {{ action.title }}</p>
+              <p>📍 {{ action.location }}</p>
+              <p>📆 {{ action.date }}</p>
+              <p class="description">{{ action.description }}</p>
+            </div>
+          </div>
+
+
         </template>
 
       </div>
@@ -252,6 +257,13 @@ const handlePointSelect = (id) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Обертка для тултипа событий */
+.event {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 /* смена дня ночи */

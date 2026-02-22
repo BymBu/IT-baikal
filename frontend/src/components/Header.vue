@@ -8,7 +8,7 @@
       <p class="header__author-name">Ерофеев Вячеслав</p>
       <div class="header__links">
         <a href="https://github.com/BymBu/IT-baikal/" class="header__author-github">GitHub</a>
-        <a href="t.me/slepta" class="header__author-github">Телеграм</a>
+        <a href="https://t.me/slepta" class="header__author-github">Телеграм</a>
       </div>
 
     </div>
