@@ -4,7 +4,6 @@
       <span class="header__img">🌊</span>
       <h1 class="header__name">IT-Baikal</h1>
     </div>
-    <div class="header__controls">Панель управления</div>
   </header>
 </template>
 

@@ -12,7 +12,7 @@
       </div>
     </div>
 
-
+    <Notifications />
 
     <Transition name="fade">
       <div v-if="showTooltipFlag && currentMarker" class="marker-tooltip"
@@ -32,6 +32,11 @@ import SidebarComponent from '../components/Sidebar.vue'
 import { useThreeScene } from '../composables/useThreeScene'
 import { useCameraControls } from '../composables/useCameraControls'
 import { useMarkers } from '../composables/useMarkers'
+import Notifications from '@/components/Notifications.vue'
+import { useNotifications } from '@/stores/notifications'
+
+// Уведомления
+const notify = useNotifications()
 
 // контейнер с 3д моделью
 const container = ref(null)
@@ -111,6 +116,7 @@ onUnmounted(() => {
 const handlePointSelect = (id) => {
   console.log('🎯 Выбран маркер:', id)
   highlightMarker(id)
+  notify.show('Маркер добавлен!', 'success')
 }
 </script>
 

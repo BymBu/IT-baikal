@@ -1,3 +1,4 @@
+import { useNotifications } from "@/stores/notifications";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { ref } from "vue";
@@ -5,6 +6,9 @@ import { ref } from "vue";
 export function useThreeScene(containerRef, threeState) {
   // переменная дня и ночи
   const day = ref(true);
+
+  // Уведомления
+  const notify = useNotifications();
 
   // инициализация
   const initScene = () => {
@@ -39,10 +43,11 @@ export function useThreeScene(containerRef, threeState) {
     setupBackground(scene, day.value);
     setupLights(scene, day.value);
 
-    // Смена дня и ночи каждые 60сек
+    // Смена дня и ночи каждые 20сек
     setInterval(() => {
       day.value = !day.value;
-    }, 60000);
+      notify.show("Время суток поменялось..", "info", 3000);
+    }, 20000);
 
     // Модель
     loadModel(scene);
