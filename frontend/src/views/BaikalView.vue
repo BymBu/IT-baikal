@@ -41,6 +41,7 @@ const points = [
   { id: 1, name: 'Центр', position: [23, 3, 0], airQuality: 1020, waterQuality: 100 },
   { id: 2, name: 'Угол 1', position: [-30, 3, 40], airQuality: 98, waterQuality: 95 },
   { id: 3, name: 'Угол 2', position: [10, 3, -40], airQuality: 100, waterQuality: 97 },
+  { id: 3, name: 'Угол 222', position: [10, 23, -40], airQuality: 100, waterQuality: 97 },
 ]
 
 const { initScene } = useThreeScene(container, threeState)
