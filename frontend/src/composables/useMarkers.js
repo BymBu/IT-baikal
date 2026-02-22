@@ -1,10 +1,17 @@
+import { useApiStore } from "@/stores/api";
 import * as THREE from "three";
 import { ref } from "vue";
 
 export function useMarkers(threeState) {
+  // API
+  const apiStore = useApiStore();
+  apiStore.fetchData();
+
+  // Reaycaster, мышь
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
+  // массив спрайтов
   let sprites = [];
 
   const currentMarker = ref(null);
@@ -27,7 +34,7 @@ export function useMarkers(threeState) {
 
     // кружок
     ctx.beginPath();
-    ctx.arc(128, 128, 35, 0, Math.PI * 2);
+    ctx.arc(128, 128, 45, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.shadowColor = "rgba(0,0,0,0.5)";
     ctx.shadowBlur = 15;
@@ -47,7 +54,44 @@ export function useMarkers(threeState) {
     return new THREE.CanvasTexture(canvas);
   };
 
-  const createMarkers = (points) => {
+  const createMarkers = () => {
+    if (!apiStore.data) return;
+
+    const points = [
+      {
+        id: 1,
+        name: "Вода",
+        type: "water",
+        position: [4, 3, 30],
+        data: apiStore.waterData,
+        color: "#3B82F6",
+      },
+      {
+        id: 2,
+        name: "Воздух",
+        type: "air",
+        position: [10, 23, -20],
+        data: apiStore.airData,
+        color: "#10B981",
+      },
+      {
+        id: 3,
+        name: "Туризм",
+        type: "tourism",
+        position: [-30, 3, 40],
+        data: apiStore.tourismData,
+        color: "#F59E0B",
+      },
+      {
+        id: 4,
+        name: "События",
+        type: "event",
+        position: [23, 3, 0],
+        data: apiStore.nextAction,
+        color: "#EF4444",
+      },
+    ];
+
     if (!threeState.value?.scene) {
       console.error("❌ Сцена не доступна!");
       return;
@@ -78,13 +122,7 @@ export function useMarkers(threeState) {
       sprite.scale.set(15, 15, 15);
       sprite.renderOrder = 1;
 
-      sprite.userData = {
-        id: point.id,
-        name: point.name,
-        airQuality: point.airQuality,
-        waterQuality: point.waterQuality,
-        type: "marker",
-      };
+      sprite.userData = point;
 
       scene.add(sprite);
       sprites.push(sprite);
@@ -116,7 +154,7 @@ export function useMarkers(threeState) {
       console.log("🎯 Ховер на:", sprite.userData);
 
       showTooltipFlag.value = true;
-      currentMarker.value = sprite.userData;
+      currentMarker.value = { ...sprite.userData };
       tooltipPosition.value = { x: event.clientX, y: event.clientY };
 
       // Подсветка текущего
@@ -132,7 +170,7 @@ export function useMarkers(threeState) {
       currentMarker.value = null;
 
       sprites.forEach((s) => {
-        sprite.scale.set(15, 15, 15);
+        s.scale.set(15, 15, 15);
       });
     }
   };

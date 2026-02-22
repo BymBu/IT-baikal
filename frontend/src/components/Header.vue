@@ -4,6 +4,14 @@
       <span class="header__img">🌊</span>
       <h1 class="header__name">IT-Baikal</h1>
     </div>
+    <div class="header__author">
+      <p class="header__author-name">Ерофеев Вячеслав</p>
+      <div class="header__links">
+        <a href="https://github.com/BymBu/IT-baikal/" class="header__author-github">GitHub</a>
+        <a href="t.me/slepta" class="header__author-github">Телеграм</a>
+      </div>
+
+    </div>
   </header>
 </template>
 
@@ -33,6 +41,23 @@
 }
 
 .header__controls {
+  color: var(--text);
+}
+
+.header__links {
+  display: flex;
+  gap: 5px;
+}
+
+.header__author {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: start;
+  gap: 5px;
+}
+
+.header__author-github {
   color: var(--text);
 }
 </style>

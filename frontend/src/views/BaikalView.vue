@@ -5,7 +5,7 @@
       <SidebarComponent @select-point="handlePointSelect" />
 
       <div class="content-wrapper">
-        <div class="night-overlay" :style="{ opacity: isNight ? 0.8 : 0 }"></div>
+        <div class="night-overlay" :style="{ opacity: isNight ? 0.6 : 0 }"></div>
         <main class="content" ref="container" @wheel.prevent="handleWheel" @mouseup="handleMouseUp"
           @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave"></main>
 
@@ -17,9 +17,48 @@
     <Transition name="fade">
       <div v-if="showTooltipFlag && currentMarker" class="marker-tooltip"
         :style="{ left: tooltipPosition.x + 'px', top: tooltipPosition.y + 'px' }">
-        <h3>{{ currentMarker.name }}</h3>
-        <p>💨 Воздух: {{ currentMarker.airQuality }}</p>
-        <p>💧 Вода: {{ currentMarker.waterQuality }}</p>
+
+        <!-- Заголовок с иконкой в зависимости от типа -->
+        <h3>
+          <span v-if="currentMarker.type === 'water'">Уровень воды</span>
+          <span v-if="currentMarker.type === 'air'">Качество воздуха</span>
+          <span v-if="currentMarker.type === 'tourism'">Туризм</span>
+          <span v-if="currentMarker.type === 'event'">События</span>
+        </h3>
+
+        <!-- ВОДА -->
+        <template v-if="currentMarker.type === 'water'">
+          <p>Уровень: {{ currentMarker.data.level }}{{ currentMarker.data.unit }} </p>
+          <p>Статус: {{ currentMarker.data.status }}</p>
+          <p>Обновлено: {{ currentMarker.data.updated_at }}</p>
+        </template>
+
+        <!-- ВОЗДУХ -->
+        <template v-else-if="currentMarker.type === 'air'">
+          <p>AQI: {{ currentMarker.data.aqi }}</p>
+          <p>PM2.5: {{ currentMarker.data.pm2_5 }}</p>
+          <p>PM10: {{ currentMarker.data.pm10 }}</p>
+          <p>no2: {{ currentMarker.data.no2 }}</p>
+          <p>Статус: {{ currentMarker.data.status_level }}</p>
+          <p class="health-message">⚠️ {{ currentMarker.data.health_message }}</p>
+        </template>
+
+        <!-- ТУРИЗМ -->
+        <template v-else-if="currentMarker.type === 'tourism'">
+          <p>Загруженность: {{ currentMarker.data.load_percent }}%</p>
+          <p>Температура: {{ currentMarker.data.avg_temp_c }}°C</p>
+          <p>Топ место: {{ currentMarker.data.top_location }}</p>
+          <p class="tip">💡 {{ currentMarker.data.visitor_tip }}</p>
+        </template>
+
+        <!-- СОБЫТИЯ -->
+        <template v-else-if="currentMarker.type === 'event'">
+          <p>{{ currentMarker.data.icon }} {{ currentMarker.data.title }}</p>
+          <p>📍 {{ currentMarker.data.location }}</p>
+          <p>📆 {{ currentMarker.data.date }}</p>
+          <p class="description">{{ currentMarker.data.description }}</p>
+        </template>
+
       </div>
     </Transition>
   </div>
@@ -48,13 +87,6 @@ const threeState = ref({
   renderer: null
 })
 
-// маркеры
-const points = [
-  { id: 1, name: 'Центр', position: [23, 3, 0], airQuality: 1020, waterQuality: 100 },
-  { id: 2, name: 'Угол 1', position: [-30, 3, 40], airQuality: 98, waterQuality: 95 },
-  { id: 3, name: 'Угол 2', position: [10, 3, -40], airQuality: 100, waterQuality: 97 },
-  { id: 3, name: 'Угол 222', position: [10, 23, -40], airQuality: 100, waterQuality: 97 },
-]
 
 const { initScene, day } = useThreeScene(container, threeState)
 
@@ -91,7 +123,7 @@ onMounted(() => {
   setTimeout(() => {
     if (threeState.value.scene) {
       console.log('📌 Создаем маркеры...')
-      createMarkers(points)
+      createMarkers()
     } else {
       console.error('❌ Сцена не создана!')
     }
