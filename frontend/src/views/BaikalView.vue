@@ -279,4 +279,205 @@ const handlePointSelect = (id) => {
   z-index: 2;
   border-radius: 15px;
 }
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 15px;
+    height: 55px;
+  }
+
+  .marker-tooltip {
+    min-width: 180px;
+    padding: 14px 20px;
+  }
+
+  .marker-tooltip h3 {
+    font-size: 15px;
+  }
+
+  .marker-tooltip p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .header {
+    height: 50px;
+    padding: 0 12px;
+    margin: 8px 8px 0;
+  }
+
+  .header__name {
+    font-size: 20px;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+    position: relative;
+  }
+
+
+
+  .sidebar nav {
+    flex-wrap: wrap;
+  }
+
+  .sidebar button {
+    flex: 1 1 auto;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .content-wrapper {
+    margin: 8px !important;
+    height: calc(100vh - 130px);
+  }
+
+  .marker-tooltip {
+    min-width: 160px;
+    padding: 12px 16px;
+    transform: translate(10px, -50%);
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 50px;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .header__logo {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header__user {
+    width: 100%;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .bottom-section {
+    position: relative;
+  }
+
+  .sidebar {
+    top: 80px !important;
+    padding: 12px !important;
+  }
+
+  .sidebar button {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .marker-tooltip {
+    min-width: 150px;
+    max-width: 220px;
+    padding: 10px 14px;
+  }
+
+  .marker-tooltip h3 {
+    font-size: 14px;
+  }
+
+  .marker-tooltip p {
+    font-size: 12px;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header {
+    padding: 6px 8px;
+    margin: 5px 5px 0;
+  }
+
+  .header__logo {
+    gap: 5px;
+  }
+
+  .header__name {
+    font-size: 18px;
+  }
+
+  .header__user {
+    gap: 8px;
+  }
+
+  .header__link {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .sidebar {
+    top: 70px !important;
+    padding: 10px !important;
+  }
+
+  .sidebar button {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  .content-wrapper {
+    margin: 5px !important;
+    border-radius: 10px !important;
+    height: calc(100vh - 110px);
+  }
+
+  .marker-tooltip {
+    min-width: 140px !important;
+    max-width: 200px !important;
+    padding: 8px 12px !important;
+    transform: translate(5px, -50%) !important;
+  }
+
+  .marker-tooltip h3 {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .marker-tooltip p {
+    font-size: 10px !important;
+    margin: 2px 0 !important;
+  }
+
+  .event--wrapper p {
+    font-size: 10px !important;
+    word-break: break-word;
+  }
+
+  .night-overlay {
+    border-radius: 10px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .header__link-text {
+    display: none;
+  }
+
+  .header__link {
+    padding: 6px;
+  }
+
+  .marker-tooltip {
+    min-width: 130px !important;
+    max-width: 160px !important;
+    padding: 6px 10px !important;
+  }
+
+  .marker-tooltip h3 {
+    font-size: 12px !important;
+  }
+
+  .marker-tooltip p {
+    font-size: 9px !important;
+  }
+}
 </style>
