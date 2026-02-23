@@ -5,11 +5,6 @@
       <button @click="$emit('select-point', 2)">Угол 1</button>
       <button @click="$emit('select-point', 3)">Угол 2</button>
     </nav>
-    <nav>
-      <button>Воздух</button>
-      <button>Вода</button>
-      <button>Туристы</button>
-    </nav>
   </aside>
 </template>
 

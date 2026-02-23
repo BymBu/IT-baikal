@@ -15,3 +15,12 @@
   --text: #0f172a;
   --border: #cbd5e1;
 }
+
+
+.btn {
+  padding: 10px;
+  background-color: var(--bgSoft);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}

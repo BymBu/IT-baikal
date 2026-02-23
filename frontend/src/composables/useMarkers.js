@@ -61,7 +61,7 @@ export function useMarkers(threeState) {
         id: 1,
         name: "Вода",
         type: "water",
-        position: [4, 3, 30],
+        position: [2, 3, 20],
         data: apiStore.waterData,
         color: "#3B82F6",
       },
