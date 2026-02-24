@@ -1,6 +1,6 @@
 import { useApiStore } from "@/stores/api";
 import * as THREE from "three";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export function useMarkers(threeState) {
   // API
@@ -18,8 +18,17 @@ export function useMarkers(threeState) {
   const tooltipPosition = ref({ x: 0, y: 0 });
   const showTooltipFlag = ref(false);
 
-  const createMarkerTexture = (point) => {
+  // загружаем данные из апи
+  watch(
+    () => apiStore.data,
+    (newData) => {
+      if (newData && threeState.value?.scene) {
+        createMarkers();
+      }
+    },
+  );
 
+  const createMarkerTexture = (point) => {
     const canvas = document.createElement("canvas");
     canvas.width = 256;
     canvas.height = 256;

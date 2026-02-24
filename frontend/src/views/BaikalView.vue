@@ -125,15 +125,6 @@ onMounted(() => {
   console.log('🔧 Инициализация...')
   initScene()
 
-  setTimeout(() => {
-    if (threeState.value.scene) {
-      console.log('📌 Создаем маркеры...')
-      createMarkers()
-    } else {
-      console.error('❌ Сцена не создана!')
-    }
-  }, 500)
-
   if (container.value) {
     container.value.addEventListener('mousemove', onMouseMoveForRaycaster)
   }

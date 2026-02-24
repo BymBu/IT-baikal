@@ -1,9 +1,10 @@
 <template>
   <aside class="sidebar">
     <nav>
-      <button @click="$emit('select-point', 1)">🏔️ Центр</button>
-      <button @click="$emit('select-point', 2)">⛰️ Угол 1</button>
-      <button @click="$emit('select-point', 3)">🏞️ Угол 2</button>
+      <button @click="$emit('select-point', 1)">💧 Вода</button>
+      <button @click="$emit('select-point', 2)">🌬️ Воздух</button>
+      <button @click="$emit('select-point', 3)">👥 Туристы</button>
+      <button @click="$emit('select-point', 4)">📅 Ивенты</button>
     </nav>
   </aside>
 </template>
@@ -49,7 +50,7 @@ button {
   width: 100%;
   transition: all 0.2s ease;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   display: flex;
   align-items: center;

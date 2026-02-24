@@ -35,6 +35,12 @@
   </header>
 </template>
 
+<script setup>
+import { useNotifications } from '@/stores/notifications';
+
+const notify = useNotifications()
+</script>
+
 <style scoped>
 .header {
   height: 70px;
